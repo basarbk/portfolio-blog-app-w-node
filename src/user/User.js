@@ -20,6 +20,9 @@ User.init(
     image: {
       type: DataTypes.STRING,
     },
+    registrationToken: {
+      type: DataTypes.STRING,
+    },
   },
   {
     sequelize,

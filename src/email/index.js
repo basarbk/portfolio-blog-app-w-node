@@ -1,15 +1,17 @@
 import * as nodemailer from "nodemailer";
+import config from "config";
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
-  auth: {
-    user: "cecile.skiles@ethereal.email",
-    pass: "1D4XAbTk1xyKUWsath",
-  },
-});
+const emailConfig = config.get("email");
+const clientConfig = config.get("client");
+const transporter = nodemailer.createTransport(emailConfig);
 
 export async function sendSignUpEmail(email, token) {
+  if (process.env.NODE_ENV === "development") {
+    console.log({
+      token,
+      operation: "register",
+    });
+  }
   await transporter.sendMail({
     from: "info@my-app.com",
     to: email,
@@ -18,7 +20,7 @@ export async function sendSignUpEmail(email, token) {
     <h1>You are almost there</h1>
     <span>Click the link below to confirm your email and finish creating your My App account.</span>
     <div>
-    <a href="http://localhost:5173/callback?token=${token}&operation=register">Create your account</a>
+    <a href="${clientConfig.host}/callback?token=${token}&operation=register">Create your account</a>
     </div>
     `,
   });

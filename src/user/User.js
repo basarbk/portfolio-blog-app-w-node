@@ -23,6 +23,9 @@ User.init(
     registrationToken: {
       type: DataTypes.STRING,
     },
+    loginToken: {
+      type: DataTypes.STRING,
+    },
   },
   {
     sequelize,

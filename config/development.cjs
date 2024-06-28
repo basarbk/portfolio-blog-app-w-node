@@ -12,7 +12,7 @@ module.exports = {
     port: 587,
     auth: {
       user: "cecile.skiles@ethereal.email",
-      pass: "1D4XAbTk1xyKUWsath",
+      pass: "1D4XAbTk1xyKUWsath----",
     },
   },
   client: {

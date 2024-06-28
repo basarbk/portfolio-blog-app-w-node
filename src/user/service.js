@@ -26,3 +26,7 @@ export async function save(body) {
     }
   }
 }
+
+export async function findByEmail(email) {
+  return await User.findOne({ where: { email } });
+}

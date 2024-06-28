@@ -8,9 +8,13 @@ const userRouter = new Router();
 userRouter.post(
   "/api/users",
   schemaValidator(userPostSchema),
-  async (req, res, _next) => {
-    await save(req.body);
-    res.send({ message: "Success" });
+  async (req, res, next) => {
+    try {
+      await save(req.body);
+      res.send({ message: "Success" });
+    } catch (err) {
+      next(err);
+    }
   },
 );
 

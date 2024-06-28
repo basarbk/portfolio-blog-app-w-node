@@ -1,4 +1,5 @@
 import { sendSignUpEmail } from "../email/index.js";
+import ValidationException from "../error/ValidationException.js";
 import generateUniqueValue from "../shared/utils/generateUniqueValue.js";
 import User from "./User.js";
 
@@ -16,6 +17,12 @@ export async function save(body) {
     handle,
     registrationToken: generateUniqueValue(),
   };
-  await User.create(user);
-  await sendSignUpEmail(user.email, user.registrationToken);
+  try {
+    await User.create(user);
+    await sendSignUpEmail(user.email, user.registrationToken);
+  } catch (error) {
+    if (error?.name === "SequelizeUniqueConstraintError") {
+      throw new ValidationException({ email: "E-mail is in use" });
+    }
+  }
 }

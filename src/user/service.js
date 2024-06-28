@@ -1,3 +1,4 @@
+import sequelize from "../db/index.js";
 import { sendSignUpEmail } from "../email/index.js";
 import EmailException from "../error/EmailException.js";
 import ValidationException from "../error/ValidationException.js";
@@ -18,13 +19,16 @@ export async function save(body) {
     handle,
     registrationToken: generateUniqueValue(),
   };
+  const transaction = await sequelize.transaction();
   try {
-    await User.create(user);
+    await User.create(user, { transaction });
     await sendSignUpEmail(user.email, user.registrationToken);
+    await transaction.commit();
   } catch (error) {
     if (error?.name === "SequelizeUniqueConstraintError") {
       throw new ValidationException({ email: "E-mail is in use" });
     }
+    await transaction.rollback();
     throw new EmailException();
   }
 }

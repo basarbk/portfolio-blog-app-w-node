@@ -38,12 +38,22 @@ export async function findByEmail(email) {
   return await User.findOne({ where: { email } });
 }
 
-export async function validateToken(token) {
-  const user = await User.findOne({ where: { registrationToken: token } });
+export async function validateToken(token, operation) {
+  const where = {};
+  if (operation === "register") {
+    where["registrationToken"] = token;
+  } else {
+    where["loginToken"] = token;
+  }
+  const user = await User.findOne({ where });
   if (!user) {
     throw new ValidationException();
   }
-  user.registrationToken = null;
+  if (operation === "register") {
+    user.registrationToken = null;
+  } else {
+    user.loginToken = null;
+  }
   await user.save();
   return user;
 }

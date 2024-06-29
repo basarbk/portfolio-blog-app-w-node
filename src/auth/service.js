@@ -4,7 +4,7 @@ import Token from "./Token.js";
 import { AuthUser } from "./dto/auth-user.dto.js";
 
 export async function handleAuth(auth) {
-  const user = await validateToken(auth.token);
+  const user = await validateToken(auth.token, auth.operation);
 
   const token = generateUniqueValue();
   await Token.create({

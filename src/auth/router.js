@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleAuth } from "./service.js";
+import { handleAuth, logout } from "./service.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
 import { authSchema } from "./validation/schema.js";
 
@@ -23,5 +23,11 @@ authRouter.post(
     }
   },
 );
+
+authRouter.post("/api/auth/logout", async (req, res) => {
+  await logout(req.cookies["app-token"]);
+  res.clearCookie("app-token");
+  res.send({});
+});
 
 export default authRouter;

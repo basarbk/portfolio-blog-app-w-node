@@ -17,3 +17,8 @@ export async function handleAuth(auth) {
     token,
   };
 }
+
+export async function logout(token) {
+  if (!token) return;
+  await Token.destroy({ where: { token } });
+}

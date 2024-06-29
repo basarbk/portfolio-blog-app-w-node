@@ -36,3 +36,13 @@ export async function save(body) {
 export async function findByEmail(email) {
   return await User.findOne({ where: { email } });
 }
+
+export async function validateToken(token) {
+  const user = await User.findOne({ where: { registrationToken: token } });
+  if (!user) {
+    throw new ValidationException();
+  }
+  user.registrationToken = null;
+  await user.save();
+  return user;
+}

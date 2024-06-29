@@ -11,3 +11,11 @@ export const authSchema = checkSchema({
     },
   },
 });
+
+export const loginSchema = checkSchema({
+  email: {
+    isEmail: {
+      errorMessage: "Invalid email",
+    },
+  },
+});

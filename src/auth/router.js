@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { handleAuth, logout } from "./service.js";
+import { handleAuth, handleLogin, logout } from "./service.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
-import { authSchema } from "./validation/schema.js";
+import { authSchema, loginSchema } from "./validation/schema.js";
 
 const authRouter = new Router();
 
@@ -29,5 +29,18 @@ authRouter.post("/api/auth/logout", async (req, res) => {
   res.clearCookie("app-token");
   res.send({});
 });
+
+authRouter.post(
+  "/api/auth/login",
+  schemaValidator(loginSchema),
+  async (req, res, next) => {
+    try {
+      await handleLogin(req.body);
+      res.send({ message: "Please check your email" });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 export default authRouter;

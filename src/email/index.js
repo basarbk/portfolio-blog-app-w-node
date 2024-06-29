@@ -25,3 +25,23 @@ export async function sendSignUpEmail(email, token) {
     `,
   });
 }
+
+export async function sendLoginEmail(email, token) {
+  if (process.env.NODE_ENV === "development") {
+    console.log({
+      token,
+      operation: "login",
+    });
+  }
+  await transporter.sendMail({
+    from: "info@my-app.com",
+    to: email,
+    subject: "Sign in to My App",
+    html: `
+    <span>Click the link below to sign in to your My App account.</span>
+    <div>
+    <a href="${clientConfig.host}/callback?token=${token}&operation=login">Sign in to My App</a>
+    </div>
+    `,
+  });
+}

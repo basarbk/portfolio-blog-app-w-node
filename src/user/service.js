@@ -1,7 +1,8 @@
 import sequelize from "../db/index.js";
-import { sendSignUpEmail } from "../email/index.js";
+import { sendLoginEmail, sendSignUpEmail } from "../email/index.js";
 import EmailException from "../error/EmailException.js";
 import ValidationException from "../error/ValidationException.js";
+import NotFoundException from "../error/NotFoundException.js";
 import generateUniqueValue from "../shared/utils/generateUniqueValue.js";
 import User from "./User.js";
 
@@ -45,4 +46,21 @@ export async function validateToken(token) {
   user.registrationToken = null;
   await user.save();
   return user;
+}
+
+export async function generateLoginToken(email) {
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    throw new NotFoundException();
+  }
+  user.loginToken = generateUniqueValue();
+  const transaction = await sequelize.transaction();
+  try {
+    await user.save({ transaction });
+    await sendLoginEmail(email, user.loginToken);
+    await transaction.commit();
+  } catch {
+    await transaction.rollback();
+    throw new EmailException();
+  }
 }

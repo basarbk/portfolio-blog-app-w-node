@@ -11,7 +11,7 @@ userRouter.post(
   async (req, res, next) => {
     try {
       await save(req.body);
-      res.send({ message: "Success" });
+      res.send({ message: "Please check your email" });
     } catch (err) {
       next(err);
     }

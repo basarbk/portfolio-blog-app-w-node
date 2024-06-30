@@ -58,13 +58,17 @@ articleRouter.get("/api/articles", pagination, async (req, res) => {
   res.send(articles);
 });
 
-articleRouter.get("/api/articles/:idOrSlug", async (req, res, next) => {
-  try {
-    const article = await getArticleByIdOrSlug(req.params.idOrSlug);
-    res.send(article);
-  } catch (err) {
-    next(err);
-  }
-});
+articleRouter.get(
+  "/api/articles/:idOrSlug",
+  authUser(),
+  async (req, res, next) => {
+    try {
+      const article = await getArticleByIdOrSlug(req.params.idOrSlug, req.user);
+      res.send(article);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 export default articleRouter;

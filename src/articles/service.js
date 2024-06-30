@@ -80,7 +80,7 @@ function getOrder(sort, direction) {
   return undefined;
 }
 
-export async function getArticleByIdOrSlug(idOrSlug) {
+export async function getArticleByIdOrSlug(idOrSlug, user) {
   const where = {};
   if (Number.isInteger(Number(idOrSlug))) {
     where["id"] = +idOrSlug;
@@ -89,5 +89,9 @@ export async function getArticleByIdOrSlug(idOrSlug) {
   }
   const article = await Article.findOne({ where, include: User });
   if (!article) throw new NotFoundException();
+  if (!article.published) {
+    if (!user) throw new NotFoundException();
+    if (user.id !== article.userId) throw new NotFoundException();
+  }
   return new ArticleWithContent(article);
 }

@@ -1,7 +1,7 @@
 import Article from "./Article.js";
 import generateUniqueValue from "../shared/utils/generateUniqueValue.js";
 
-export async function save(body) {
+export async function save(body, user) {
   const slug =
     encodeURIComponent(body.title.toLowerCase().replaceAll(" ", "-")) +
     "-" +
@@ -12,6 +12,7 @@ export async function save(body) {
     content: body.content,
     image: body.image,
     slug,
+    userId: user.id,
   };
 
   const savedArticle = await Article.create(article);

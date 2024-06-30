@@ -50,7 +50,7 @@ async function getArticle(id, user) {
 }
 
 export async function getArticles(pagination) {
-  const { page, size } = pagination;
+  const { page, size, sort, direction } = pagination;
   const offset = page * size;
   const { count, rows } = await Article.findAndCountAll({
     limit: size,
@@ -58,6 +58,7 @@ export async function getArticles(pagination) {
     where: {
       published: true,
     },
+    order: getOrder(sort, direction),
   });
 
   return {
@@ -66,4 +67,12 @@ export async function getArticles(pagination) {
     size,
     total: Math.ceil(count / size),
   };
+}
+
+function getOrder(sort, direction) {
+  const sortingAllowed = ["id", "published_at"];
+  if (sortingAllowed.indexOf(sort) > -1) {
+    return [[sort, direction]];
+  }
+  return undefined;
 }

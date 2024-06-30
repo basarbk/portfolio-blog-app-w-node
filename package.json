@@ -8,7 +8,8 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development npm run migrate && cross-env NODE_ENV=development node --watch index.js",
     "lint": "eslint .",
-    "migrate": "sequelize-cli db:migrate"
+    "migrate": "sequelize-cli db:migrate",
+    "seed": "sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",

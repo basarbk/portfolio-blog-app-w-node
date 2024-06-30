@@ -4,6 +4,7 @@ import schemaValidator from "../shared/middleware/schemaValidator.js";
 import {
   getArticleByIdOrSlug,
   getArticles,
+  getArticlesOfUser,
   publish,
   save,
   update,
@@ -68,6 +69,20 @@ articleRouter.get(
     } catch (err) {
       next(err);
     }
+  },
+);
+
+articleRouter.get(
+  "/api/users/:idOrHandle/articles",
+  pagination,
+  authUser(),
+  async (req, res) => {
+    const articles = await getArticlesOfUser(
+      req.pagination,
+      req.params.idOrHandle,
+      req.user,
+    );
+    res.send(articles);
   },
 );
 

@@ -52,16 +52,38 @@ async function getArticle(id, user) {
 }
 
 export async function getArticles(pagination) {
+  const options = { where: { published: true } };
+  return getArticlePage(pagination, options);
+}
+
+export async function getArticlesOfUser(pagination, idOrHandle, user) {
+  const options = {
+    where: { published: true },
+    include: [{ model: User, where: {} }],
+  };
+  if (Number.isInteger(Number(idOrHandle))) {
+    options.include[0].where["id"] = +idOrHandle;
+    if (user?.id === +idOrHandle) {
+      delete options.where;
+    }
+  } else {
+    options.include[0].where["handle"] = idOrHandle;
+    if (user?.handle === idOrHandle) {
+      delete options.where;
+    }
+  }
+  return getArticlePage(pagination, options);
+}
+
+async function getArticlePage(pagination, options) {
   const { page, size, sort, direction } = pagination;
   const offset = page * size;
   const { count, rows } = await Article.findAndCountAll({
     limit: size,
     offset,
-    where: {
-      published: true,
-    },
     order: getOrder(sort, direction),
     include: User,
+    ...options,
   });
 
   return {

@@ -7,7 +7,7 @@ const articleRouter = new Router();
 
 articleRouter.post(
   "/api/articles",
-  authUser,
+  authUser({ required: true }),
   schemaValidator(articleSchema),
   async (req, res, next) => {
     try {

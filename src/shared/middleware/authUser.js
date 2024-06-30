@@ -1,9 +1,19 @@
 import { getUserFromToken } from "../../auth/service.js";
+import ForbiddenException from "../../error/ForbiddenException.js";
 
-export default async function (req, res, next) {
-  const token = req.cookies["app-token"];
-  if (!token) return next();
-  const user = await getUserFromToken(token);
-  req["user"] = user;
-  next();
+export default function ({ required } = { required: false }) {
+  return async function (req, res, next) {
+    const token = req.cookies["app-token"];
+    if (token) {
+      const user = await getUserFromToken(token);
+      if (user) {
+        req["user"] = user;
+        return next();
+      }
+    }
+    if (required) {
+      return next(new ForbiddenException());
+    }
+    next();
+  };
 }

@@ -2,6 +2,8 @@ import Article from "./Article.js";
 import generateUniqueValue from "../shared/utils/generateUniqueValue.js";
 import NotFoundException from "../error/NotFoundException.js";
 import ForbiddenException from "../error/ForbiddenException.js";
+import User from "../user/User.js";
+import { ShortArticle } from "./dto/article.dto.js";
 
 export async function save(body, user) {
   const slug =
@@ -59,10 +61,11 @@ export async function getArticles(pagination) {
       published: true,
     },
     order: getOrder(sort, direction),
+    include: User,
   });
 
   return {
-    content: rows,
+    content: rows.map((article) => new ShortArticle(article)),
     page,
     size,
     total: Math.ceil(count / size),

@@ -39,4 +39,5 @@ User.hasMany(Token, { onDelete: "cascade", foreignKey: "userId" });
 User.hasMany(Article, { onDelete: "cascade", foreignKey: "userId" });
 
 Token.belongsTo(User);
+Article.belongsTo(User);
 export default User;

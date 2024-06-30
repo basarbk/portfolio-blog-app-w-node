@@ -48,3 +48,22 @@ async function getArticle(id, user) {
   }
   return articleInDb;
 }
+
+export async function getArticles(pagination) {
+  const { page, size } = pagination;
+  const offset = page * size;
+  const { count, rows } = await Article.findAndCountAll({
+    limit: size,
+    offset,
+    where: {
+      published: true,
+    },
+  });
+
+  return {
+    content: rows,
+    page,
+    size,
+    total: Math.ceil(count / size),
+  };
+}

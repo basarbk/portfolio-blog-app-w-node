@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { articleSchema } from "./validation/schema.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
-import { getArticles, publish, save, update } from "./service.js";
+import {
+  getArticleByIdOrSlug,
+  getArticles,
+  publish,
+  save,
+  update,
+} from "./service.js";
 import authUser from "../shared/middleware/authUser.js";
 import pagination from "../shared/middleware/pagination.js";
 const articleRouter = new Router();
@@ -50,6 +56,15 @@ articleRouter.patch(
 articleRouter.get("/api/articles", pagination, async (req, res) => {
   const articles = await getArticles(req.pagination);
   res.send(articles);
+});
+
+articleRouter.get("/api/articles/:idOrSlug", async (req, res, next) => {
+  try {
+    const article = await getArticleByIdOrSlug(req.params.idOrSlug);
+    res.send(article);
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default articleRouter;

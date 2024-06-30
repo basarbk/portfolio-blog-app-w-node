@@ -3,7 +3,7 @@ import generateUniqueValue from "../shared/utils/generateUniqueValue.js";
 import NotFoundException from "../error/NotFoundException.js";
 import ForbiddenException from "../error/ForbiddenException.js";
 import User from "../user/User.js";
-import { ShortArticle } from "./dto/article.dto.js";
+import { ArticleWithContent, ShortArticle } from "./dto/article.dto.js";
 
 export async function save(body, user) {
   const slug =
@@ -78,4 +78,16 @@ function getOrder(sort, direction) {
     return [[sort, direction]];
   }
   return undefined;
+}
+
+export async function getArticleByIdOrSlug(idOrSlug) {
+  const where = {};
+  if (Number.isInteger(Number(idOrSlug))) {
+    where["id"] = +idOrSlug;
+  } else {
+    where["slug"] = idOrSlug;
+  }
+  const article = await Article.findOne({ where, include: User });
+  if (!article) throw new NotFoundException();
+  return new ArticleWithContent(article);
 }

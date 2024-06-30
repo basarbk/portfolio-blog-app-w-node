@@ -18,3 +18,11 @@ export class ShortArticle {
     this.author = new AuthUser(article.User);
   }
 }
+
+export class ArticleWithContent extends ShortArticle {
+  content;
+  constructor(article) {
+    super(article);
+    this.content = article.content;
+  }
+}

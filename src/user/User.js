@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/index.js";
 import Token from "../auth/Token.js";
+import Article from "../articles/Article.js";
 
 class User extends Model {}
 
@@ -35,5 +36,6 @@ User.init(
 );
 
 User.hasMany(Token, { onDelete: "cascade", foreignKey: "userId" });
+User.hasMany(Article, { onDelete: "cascade", foreignKey: "userId" });
 
 export default User;

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { articleSchema } from "./validation/schema.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
-import { save, update } from "./service.js";
+import { publish, save, update } from "./service.js";
 import authUser from "../shared/middleware/authUser.js";
 const articleRouter = new Router();
 
@@ -27,6 +27,19 @@ articleRouter.put(
     try {
       const article = await update(req.params.id, req.body, req.user);
       res.send(article);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+articleRouter.patch(
+  "/api/articles/:id/publish",
+  authUser({ required: true }),
+  async (req, res, next) => {
+    try {
+      const result = await publish(req.params.id, req.user);
+      res.send(result);
     } catch (err) {
       next(err);
     }

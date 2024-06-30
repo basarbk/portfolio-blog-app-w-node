@@ -22,6 +22,23 @@ export async function save(body, user) {
 }
 
 export async function update(id, body, user) {
+  const articleInDb = await getArticle(id, user);
+  articleInDb.title = body.title;
+  articleInDb.content = body.content;
+  articleInDb.image = body.image;
+  await articleInDb.save();
+  return { id };
+}
+
+export async function publish(id, user) {
+  const articleInDb = await getArticle(id, user);
+  articleInDb.published = !articleInDb.published;
+  articleInDb.published_at = articleInDb.published ? new Date() : null;
+  await articleInDb.save();
+  return { published: articleInDb.published };
+}
+
+async function getArticle(id, user) {
   const articleInDb = await Article.findOne({ where: { id } });
   if (!articleInDb) {
     throw new NotFoundException();
@@ -29,10 +46,5 @@ export async function update(id, body, user) {
   if (articleInDb.userId !== user.id) {
     throw new ForbiddenException();
   }
-
-  articleInDb.title = body.title;
-  articleInDb.content = body.content;
-  articleInDb.image = body.image;
-  await articleInDb.save();
-  return { id };
+  return articleInDb;
 }

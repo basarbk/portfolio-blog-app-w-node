@@ -8,7 +8,8 @@ export class ShortArticle {
   published;
   publishedAt;
   author;
-  constructor(article) {
+  reactions;
+  constructor(article, reactions) {
     this.id = article.id;
     this.title = article.title;
     this.slug = article.slug;
@@ -16,13 +17,14 @@ export class ShortArticle {
     this.published = article.published;
     this.publishedAt = article.publishedAt;
     this.author = new AuthUser(article.User);
+    this.reactions = reactions;
   }
 }
 
 export class ArticleWithContent extends ShortArticle {
   content;
-  constructor(article) {
-    super(article);
+  constructor(article, reactions) {
+    super(article, reactions);
     this.content = article.content;
   }
 }

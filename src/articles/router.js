@@ -54,8 +54,8 @@ articleRouter.patch(
   },
 );
 
-articleRouter.get("/api/articles", pagination, async (req, res) => {
-  const articles = await getArticles(req.pagination);
+articleRouter.get("/api/articles", authUser(), pagination, async (req, res) => {
+  const articles = await getArticles(req.pagination, req.user);
   res.send(articles);
 });
 

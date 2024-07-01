@@ -4,6 +4,7 @@ import NotFoundException from "../error/NotFoundException.js";
 import ForbiddenException from "../error/ForbiddenException.js";
 import User from "../user/User.js";
 import { ArticleWithContent, ShortArticle } from "./dto/article.dto.js";
+import { getArticleReactions } from "../reactions/service.js";
 
 export async function save(body, user) {
   const slug =
@@ -51,9 +52,9 @@ async function getArticle(id, user) {
   return articleInDb;
 }
 
-export async function getArticles(pagination) {
+export async function getArticles(pagination, user) {
   const options = { where: { published: true } };
-  return getArticlePage(pagination, options);
+  return getArticlePage(pagination, options, user);
 }
 
 export async function getArticlesOfUser(pagination, idOrHandle, user) {
@@ -72,10 +73,10 @@ export async function getArticlesOfUser(pagination, idOrHandle, user) {
       delete options.where;
     }
   }
-  return getArticlePage(pagination, options);
+  return getArticlePage(pagination, options, user);
 }
 
-async function getArticlePage(pagination, options) {
+async function getArticlePage(pagination, options, user) {
   const { page, size, sort, direction } = pagination;
   const offset = page * size;
   const { count, rows } = await Article.findAndCountAll({
@@ -86,8 +87,14 @@ async function getArticlePage(pagination, options) {
     ...options,
   });
 
+  const content = [];
+  for (const article of rows) {
+    const reactions = await getArticleReactions(article.id, user?.id);
+    content.push(new ShortArticle(article, reactions));
+  }
+
   return {
-    content: rows.map((article) => new ShortArticle(article)),
+    content,
     page,
     size,
     total: Math.ceil(count / size),
@@ -115,5 +122,7 @@ export async function getArticleByIdOrSlug(idOrSlug, user) {
     if (!user) throw new NotFoundException();
     if (user.id !== article.userId) throw new NotFoundException();
   }
-  return new ArticleWithContent(article);
+
+  const reactions = await getArticleReactions(article.id, user?.id);
+  return new ArticleWithContent(article, reactions);
 }

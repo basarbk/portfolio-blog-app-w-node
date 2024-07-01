@@ -74,3 +74,10 @@ export async function generateLoginToken(email) {
     throw new EmailException();
   }
 }
+
+export async function updateUser(id, body) {
+  const user = await User.findOne({ where: { id } });
+  user.name = body.name;
+  user.image = body.image;
+  await user.save();
+}

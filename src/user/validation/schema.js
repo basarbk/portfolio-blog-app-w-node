@@ -12,3 +12,15 @@ export const userPostSchema = checkSchema({
     },
   },
 });
+
+export const userUpdateSchema = checkSchema({
+  name: {
+    isLength: {
+      options: {
+        min: 3,
+        max: 128,
+      },
+      errorMessage: "Name must be min 3, max 128 characters",
+    },
+  },
+});

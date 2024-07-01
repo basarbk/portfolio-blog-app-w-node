@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { save } from "./service.js";
-import { userPostSchema } from "./validation/schema.js";
+import { save, updateUser } from "./service.js";
+import { userPostSchema, userUpdateSchema } from "./validation/schema.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
+import authUser from "../shared/middleware/authUser.js";
+import ForbiddenException from "../error/ForbiddenException.js";
 
 const userRouter = new Router();
 
@@ -12,6 +14,23 @@ userRouter.post(
     try {
       await save(req.body);
       res.send({ message: "Please check your email" });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+userRouter.put(
+  "/api/users/:id",
+  authUser({ required: true }),
+  schemaValidator(userUpdateSchema),
+  async (req, res, next) => {
+    if (+req.params.id !== req.user.id) {
+      return next(new ForbiddenException());
+    }
+    try {
+      await updateUser(+req.params.id, req.body);
+      res.send({ message: "User is updated" });
     } catch (err) {
       next(err);
     }

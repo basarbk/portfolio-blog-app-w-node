@@ -2,10 +2,9 @@ import { Router } from "express";
 import { handleAuth, handleLogin, logout } from "./service.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
 import { authSchema, loginSchema } from "./validation/schema.js";
+import { ONE_YEAR_IN_MILLIS } from "../shared/constant.js";
 
 const authRouter = new Router();
-
-const ONE_YEAR_IN_MILLIS = 365 * 24 * 60 * 60 * 1000;
 
 authRouter.post(
   "/api/auth",

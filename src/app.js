@@ -9,6 +9,7 @@ import { ONE_YEAR_IN_MILLIS } from "./shared/constant.js";
 import config from "config";
 import { join } from "path";
 import createDir from "./shared/utils/createDir.js";
+import reactionRouter from "./reactions/router.js";
 
 const uploadDir = join(".", config.get("uploadDir"));
 createDir(uploadDir);
@@ -26,5 +27,6 @@ app.use(userRouter);
 app.use(authRouter);
 app.use(articleRouter);
 app.use(fileRouter);
+app.use(reactionRouter);
 app.use(ErrorHandler);
 export default app;

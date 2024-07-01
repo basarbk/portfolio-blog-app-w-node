@@ -5,6 +5,7 @@ import ForbiddenException from "../error/ForbiddenException.js";
 import User from "../user/User.js";
 import { ArticleWithContent, ShortArticle } from "./dto/article.dto.js";
 import { getArticleReactions } from "../reactions/service.js";
+import Reaction from "../reactions/Reaction.js";
 
 export async function save(body, user) {
   const slug =
@@ -54,6 +55,17 @@ async function getArticle(id, user) {
 
 export async function getArticles(pagination, user) {
   const options = { where: { published: true } };
+  return getArticlePage(pagination, options, user);
+}
+
+export async function getReactedArticles(pagination, reaction, user) {
+  const options = {
+    where: { published: true },
+    include: [
+      { model: User },
+      { model: Reaction, where: { category: reaction, userId: user.id } },
+    ],
+  };
   return getArticlePage(pagination, options, user);
 }
 

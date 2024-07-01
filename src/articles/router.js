@@ -5,6 +5,7 @@ import {
   getArticleByIdOrSlug,
   getArticles,
   getArticlesOfUser,
+  getReactedArticles,
   publish,
   save,
   update,
@@ -55,6 +56,14 @@ articleRouter.patch(
 );
 
 articleRouter.get("/api/articles", authUser(), pagination, async (req, res) => {
+  if (req.query.reaction) {
+    const articles = await getReactedArticles(
+      req.pagination,
+      req.query.reaction,
+      req.user,
+    );
+    return res.send(articles);
+  }
   const articles = await getArticles(req.pagination, req.user);
   res.send(articles);
 });

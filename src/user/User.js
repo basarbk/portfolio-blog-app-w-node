@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../db/index.js";
 import Token from "../auth/Token.js";
 import Article from "../articles/Article.js";
+import Reaction from "../reactions/Reaction.js";
 
 class User extends Model {}
 
@@ -37,6 +38,7 @@ User.init(
 
 User.hasMany(Token, { onDelete: "cascade", foreignKey: "userId" });
 User.hasMany(Article, { onDelete: "cascade", foreignKey: "userId" });
+User.hasMany(Reaction, { onDelete: "cascade", foreignKey: "userId" });
 
 Token.belongsTo(User);
 Article.belongsTo(User);

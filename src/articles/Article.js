@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../db/index.js";
+import Reaction from "../reactions/Reaction.js";
 
 class Article extends Model {}
 
@@ -36,5 +37,7 @@ Article.init(
     createdAt: "created_at",
   },
 );
+
+Article.hasMany(Reaction, { onDelete: "cascade", foreignKey: "articleId" });
 
 export default Article;

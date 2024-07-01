@@ -59,6 +59,25 @@ module.exports = {
 
     await queryInterface.bulkInsert("tokens", tokens);
     await queryInterface.bulkInsert("articles", articles);
+
+    const [savedArticles] = await queryInterface.sequelize.query(
+      "SELECT * from articles",
+    );
+
+    const categories = ["like", "readingList", "hot"];
+    const reactions = [];
+
+    for (const article of savedArticles) {
+      for (const user of savedUsers) {
+        const randomIdx = Math.floor(Math.random() * 3);
+        reactions.push({
+          category: categories[randomIdx],
+          articleId: article.id,
+          userId: user.id,
+        });
+      }
+    }
+    await queryInterface.bulkInsert("reactions", reactions);
   },
 
   async down(queryInterface, _Sequelize) {

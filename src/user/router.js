@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { save, updateUser } from "./service.js";
+import { getUser, save, updateUser } from "./service.js";
 import { userPostSchema, userUpdateSchema } from "./validation/schema.js";
 import schemaValidator from "../shared/middleware/schemaValidator.js";
 import authUser from "../shared/middleware/authUser.js";
@@ -36,5 +36,14 @@ userRouter.put(
     }
   },
 );
+
+userRouter.get("/api/users/:handle", async (req, res, next) => {
+  try {
+    const user = await getUser(req.params.handle);
+    res.send(user);
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default userRouter;

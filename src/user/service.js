@@ -5,6 +5,7 @@ import ValidationException from "../error/ValidationException.js";
 import NotFoundException from "../error/NotFoundException.js";
 import generateUniqueValue from "../shared/utils/generateUniqueValue.js";
 import User from "./User.js";
+import { AuthUser } from "../auth/dto/auth-user.dto.js";
 
 export async function save(body) {
   const name = body.email.split("@")[0];
@@ -80,4 +81,10 @@ export async function updateUser(id, body) {
   user.name = body.name;
   user.image = body.image;
   await user.save();
+}
+
+export async function getUser(handle) {
+  const user = await User.findOne({ where: { handle } });
+  if (!user) throw new NotFoundException();
+  return new AuthUser(user);
 }

@@ -18,4 +18,5 @@ module.exports = {
   client: {
     host: "http://localhost:5173",
   },
+  uploadDir: "upload-prod",
 };

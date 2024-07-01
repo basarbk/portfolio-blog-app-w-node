@@ -1,13 +1,14 @@
 import { Router } from "express";
 import multer from "multer";
 import ValidationException from "../error/ValidationException.js";
-
+import config from "config";
+import { join } from "path";
 const fileRouter = new Router();
 
 const ONE_MB = 1024 * 1024;
 
 const upload = multer({
-  dest: "./upload",
+  dest: join(".", config.get("uploadDir")),
   limits: { fileSize: ONE_MB },
   fileFilter: (req, file, callback) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
